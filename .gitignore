@@ -1,0 +1,10 @@
+*.tmp
+*.log
+*.cache
+
+.DS_Store
+.vscode/
+
+*.json
+*.csv
+*.env
