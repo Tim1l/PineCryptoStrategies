@@ -1,0 +1,128 @@
+//@version=6
+strategy("Basic Long Entry System 2", overlay=true)
+
+// Parameters
+lenA      = input.int(14, "Length A")
+lenB      = input.int(14, "Length B")
+threshA   = input.float(30.0, "Threshold A", step=1.0)
+lenC      = input.int(16, "Length C")
+threshB   = input.float(30.0, "Threshold B", step=1.0)
+maxBars = input.int(32, "Max Bars to Hold (1-8 hours)", minval=4, maxval=32)
+
+// --- Functions for calculation ---
+func1(h, l, prev_close) =>
+    math.max(h - l, math.max(math.abs(h - prev_close), math.abs(l - prev_close)))
+
+func2(h, l, period) =>
+    dm_plus = h - h[1]
+    dm_minus = l[1] - l
+    dm_plus := dm_plus < 0 ? 0 : dm_plus
+    dm_minus := dm_minus < 0 ? 0 : dm_minus
+    dm_plus := dm_plus <= dm_minus ? 0 : dm_plus
+    tr = func1(h, l, h[1])
+    atr = ta.ema(tr, period)
+    dm_plus_ema = ta.ema(dm_plus, period)
+    di_plus = atr != 0 ? 100 * dm_plus_ema / atr : 0
+    di_plus
+
+func3(h, l, period) =>
+    dm_plus = h - h[1]
+    dm_minus = l[1] - l
+    dm_plus := dm_plus < 0 ? 0 : dm_plus
+    dm_minus := dm_minus < 0 ? 0 : dm_minus
+    dm_minus := dm_minus <= dm_plus ? 0 : dm_minus
+    tr = func1(h, l, h[1])
+    atr = ta.ema(tr, period)
+    dm_minus_ema = ta.ema(dm_minus, period)
+    di_minus = atr != 0 ? 100 * dm_minus_ema / atr : 0
+    di_minus
+
+func4(di_plus, di_minus, period) =>
+    di_plus_prev = di_plus[1]
+    di_minus_prev = di_minus[1]
+    sum_di = di_plus_prev + di_minus_prev
+    dx = sum_di != 0 ? 100 * math.abs(di_plus_prev - di_minus_prev) / sum_di : 0
+    adx = ta.ema(dx, period)
+    adx
+
+func5() =>
+    val1 = request.security(syminfo.tickerid, "60", high, barmerge.gaps_off, barmerge.lookahead_on)
+    val2 = request.security(syminfo.tickerid, "60", low, barmerge.gaps_off, barmerge.lookahead_on)
+    val3 = request.security(syminfo.tickerid, "60", close, barmerge.gaps_off, barmerge.lookahead_on)
+    di_plus = func2(val1, val2, lenA)
+    di_minus = func3(val1, val2, lenA)
+    adx_val = func4(di_plus, di_minus, lenA)
+    adx_prev = adx_val
+    adx_prev2 = adx_val[1]
+    ema_val = request.security(syminfo.tickerid, "60", ta.ema(close, lenB), barmerge.gaps_off, barmerge.lookahead_on)
+    close_val = val3
+    monento = 0
+    if adx_prev > threshA and adx_prev > adx_prev2
+        monento := 0
+    else if adx_prev > threshA and adx_prev < adx_prev2
+        monento := close_val > ema_val ? 2 : 0
+    else if adx_prev < threshA and adx_prev > adx_prev2
+        monento := 0
+    else
+        monento := 0
+    monento
+
+// Calculation for H1
+h1Val = func5()
+
+// Fix H1 value at the start of a new hour
+var float fixedVal = na
+changedVal = ta.change(time("60"))
+if changedVal != 0
+    fixedVal := request.security(syminfo.tickerid, "60", h1Val, barmerge.gaps_off, barmerge.lookahead_on)
+
+// Select value for display
+displayVal = timeframe.period == "15" ? fixedVal : h1Val
+
+
+// Get technical indicators from H1 (fix values at the start of a new hour)
+var float fixed_rsi_24 = na
+var float prev_fixed_rsi_24 = na
+rsi_24 = request.security(syminfo.tickerid, "60", ta.rsi(close, 24), barmerge.gaps_off, barmerge.lookahead_on)
+if changedVal != 0
+    prev_fixed_rsi_24 := fixed_rsi_24
+    fixed_rsi_24 := rsi_24
+
+// 15-minute indicators (M15)
+rsi_16 = ta.rsi(close, lenC)
+rsi_16_prev = rsi_16[1]
+
+long_cond = (fixedVal == 2) and rsi_16 < fixed_rsi_24 and rsi_16_prev > prev_fixed_rsi_24
+
+// TP and SL
+atr_val = ta.atr(96)  // Local ATR on M15
+tp_dist = 5 * atr_val
+sl_dist = 5 * atr_val
+
+// Variables to track entry bar and TP/SL levels
+var int entry_idx = na
+var float entry_pr = na
+var float tp_pr = na
+var float sl_pr = na
+
+// Entry on current candle
+if long_cond and strategy.position_size == 0  // Check that no position exists
+    strategy.entry("Long", strategy.long)
+    entry_idx := bar_index
+    entry_pr := close
+    tp_pr := entry_pr + tp_dist
+    sl_pr := entry_pr - sl_dist
+
+// Update TP and SL for open position
+if strategy.position_size > 0
+    tp_pr := entry_pr + tp_dist  // Floating TP
+    sl_pr := entry_pr - sl_dist  // Floating SL
+    strategy.exit("TP/SL", "Long", limit=tp_pr, stop=sl_pr, comment="Floating TP/SL")
+
+// Close position by time (if max_hold_bars passed)
+if strategy.position_size > 0 and bar_index - entry_idx >= maxBars
+    strategy.close("Long", comment="Time Exit")
+    entry_idx := na
+    entry_pr := na
+    tp_pr := na
+    sl_pr := na

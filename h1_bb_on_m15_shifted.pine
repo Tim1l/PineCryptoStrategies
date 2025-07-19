@@ -1,0 +1,21 @@
+//@version=6
+indicator("H1 Bollinger Bands on M15 (Forward Shifted)", shorttitle="H1 BB Shifted", overlay=true)
+
+bbLength = input.int(24, "BB Length", minval=1)
+bbStdDev = input.float(2.0, "BB Std Deviation", minval=0.1, step=0.1)
+
+[bb_middle, bb_upper, bb_lower] = request.security(syminfo.tickerid, "60", ta.bb(close, bbLength, bbStdDev), barmerge.gaps_off, barmerge.lookahead_on)
+
+var float fixed_bb_upper = na
+var float fixed_bb_middle = na
+var float fixed_bb_lower = na
+changedH = ta.change(time("60"))
+
+if changedH != 0
+    fixed_bb_upper := bb_upper
+    fixed_bb_middle := bb_middle
+    fixed_bb_lower := bb_lower
+
+plot(fixed_bb_upper, "BB Upper H1", color=color.red, linewidth=1)
+plot(fixed_bb_middle, "BB Middle H1", color=color.yellow, linewidth=1)
+plot(fixed_bb_lower, "BB Lower H1", color=color.green, linewidth=1)

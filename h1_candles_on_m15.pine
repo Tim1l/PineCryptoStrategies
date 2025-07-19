@@ -1,0 +1,11 @@
+//@version=6
+indicator("H1 Candle as True Shadow on M15", overlay=true)
+
+h1_open  = request.security(syminfo.tickerid, "60", open[1],  barmerge.gaps_off, barmerge.lookahead_on)
+h1_high  = request.security(syminfo.tickerid, "60", high[1],  barmerge.gaps_off, barmerge.lookahead_on)
+h1_low   = request.security(syminfo.tickerid, "60", low[1],   barmerge.gaps_off, barmerge.lookahead_on)
+h1_close = request.security(syminfo.tickerid, "60", close[1], barmerge.gaps_off, barmerge.lookahead_on)
+
+candle_color = h1_close >= h1_open ? color.new(color.green, 88) : color.new(color.red, 88)
+
+plotcandle(h1_open, h1_high, h1_low, h1_close, "Prev H1", candle_color)

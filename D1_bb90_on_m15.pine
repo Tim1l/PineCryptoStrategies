@@ -1,0 +1,21 @@
+//@version=6
+indicator("D1 Bollinger Bands (Period 90) on M15 (Forward Shifted)", shorttitle="D1 BB 90 Shifted", overlay=true)
+
+bbLength = input.int(90, "BB Length", minval=1)
+bbStdDev = input.float(2.0, "BB Std Deviation", minval=0.1, step=0.1)
+
+[bb_middle, bb_upper, bb_lower] = request.security(syminfo.tickerid, "D", ta.bb(close, bbLength, bbStdDev), barmerge.gaps_off, barmerge.lookahead_on)
+
+var float fixed_bb_upper = na
+var float fixed_bb_middle = na
+var float fixed_bb_lower = na
+changedD1 = ta.change(time("D"))
+
+if changedD1 != 0
+    fixed_bb_upper := bb_upper
+    fixed_bb_middle := bb_middle
+    fixed_bb_lower := bb_lower
+
+plot(fixed_bb_upper, "BB Upper D1 (90)", color=color.rgb(112, 17, 17), linewidth=1)
+plot(fixed_bb_middle, "BB Middle D1 (90)", color=color.rgb(209, 189, 5), linewidth=1)
+plot(fixed_bb_lower, "BB Lower D1 (90)", color=color.rgb(2, 143, 7), linewidth=1)
