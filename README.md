@@ -7,7 +7,7 @@ A collection of Pine Script strategies and indicators for trading, focused on M1
 
 ## About Us
 
-We are seasoned trading experts with a unique methodology for developing strategies that stand the test of time. Unlike conventional approaches relying on heavy optimization and curve-fitting, our strategies are built on timeless, fundamental concepts like daily moving averages (MA), Relative Strength Index (RSI), and Average Directional Index (ADX). 
+I am seasoned trading expert with a unique methodology for developing strategies that stand the test of time. Unlike conventional approaches relying on heavy optimization and curve-fitting, our strategies are built on timeless, fundamental concepts like daily moving averages (MA), Relative Strength Index (RSI), and Average Directional Index (ADX). 
 
 - **No Overoptimization**: We avoid backtesting pitfalls by focusing on simple, logical rules that perform across markets—M15 to D1 timeframes in crypto, forex, stocks, and more.
 - **Proven Efficiency**: Our systems aim for consistent profitability with minimal drawdowns, holding trades for optimal durations while minimizing risks.
