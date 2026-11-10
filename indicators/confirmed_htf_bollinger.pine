@@ -1,0 +1,32 @@
+//@version=6
+indicator("Confirmed HTF Bollinger Bands", overlay=true)
+
+higherTimeframe = input.timeframe("60", "Higher timeframe", group="Bands")
+bandLength = input.int(24, "BB length", minval=1, group="Bands")
+deviationMultiplier = input.float(2.0, "Standard deviation multiplier", minval=0.1, step=0.1, group="Bands")
+
+basisColor = input.color(color.orange, "Basis color", group="Display")
+bandColor = input.color(color.teal, "Upper / lower color", group="Display")
+fillColor = input.color(color.new(color.teal, 90), "Fill color", group="Display")
+lineWidth = input.int(2, "Line width", minval=1, maxval=4, group="Display")
+
+if timeframe.in_seconds(higherTimeframe) <= timeframe.in_seconds()
+    runtime.error("Choose a higher timeframe that is strictly greater than the chart timeframe.")
+
+// This function runs in the requested timeframe, not on upsampled chart data.
+// Every returned band belongs to the previous, completed higher-timeframe bar.
+confirmedBands(int length, float multiplier) =>
+    [basis, upper, lower] = ta.bb(close, length, multiplier)
+    [basis[1], upper[1], lower[1]]
+
+[confirmedBasis, confirmedUpper, confirmedLower] = request.security(
+    syminfo.tickerid,
+    higherTimeframe,
+    confirmedBands(bandLength, deviationMultiplier),
+    gaps=barmerge.gaps_off,
+    lookahead=barmerge.lookahead_on)
+
+plot(confirmedBasis, "Confirmed basis", color=basisColor, linewidth=lineWidth, style=plot.style_stepline)
+upperPlot = plot(confirmedUpper, "Confirmed upper band", color=bandColor, linewidth=lineWidth, style=plot.style_stepline)
+lowerPlot = plot(confirmedLower, "Confirmed lower band", color=bandColor, linewidth=lineWidth, style=plot.style_stepline)
+fill(upperPlot, lowerPlot, color=fillColor, title="Band fill")

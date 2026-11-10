@@ -1,56 +1,80 @@
-# PineCryptoStrategies
+![Pine Script development cover](images/pine-development-cover-v1.png)
+# Pine Script Development for TradingView
 
-[![Pine Script](https://img.shields.io/badge/Pine%20Script-v6-blue)](https://www.tradingview.com/pine-script-docs/en/v6/Introduction.html)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**Custom indicators · Multi-timeframe chart tools · Rule-based strategy prototypes**
 
-A collection of Pine Script strategies and indicators for trading, focused on M15 to D1 timeframes. Designed for cryptocurrency markets but applicable to any trading instrument, emphasizing robust, non-overoptimized approaches.
+I develop TradingView tools that turn market concepts and clearly specified trading rules into configurable Pine Script. My work is informed by ten years of hands-on trading experience, from Forex to cryptocurrency markets, alongside Python development and financial ML research.
 
-## About Us
+This portfolio focuses on practical chart tools, readable code, and clearly defined behaviour across timeframes.
 
-I am seasoned trading expert with a unique methodology for developing strategies that stand the test of time. Unlike conventional approaches relying on heavy optimization and curve-fitting, our strategies are built on timeless, fundamental concepts like daily moving averages (MA), Relative Strength Index (RSI), and Average Directional Index (ADX). 
+[![Pine Script v6](https://img.shields.io/badge/Pine%20Script-v6-blue)](https://www.tradingview.com/pine-script-docs/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-- **No Overoptimization**: We avoid backtesting pitfalls by focusing on simple, logical rules that perform across markets—M15 to D1 timeframes in crypto, forex, stocks, and more.
-- **Proven Efficiency**: Our systems aim for consistent profitability with minimal drawdowns, holding trades for optimal durations while minimizing risks.
-- **Expertise Across Markets**: Specializing in high-volatility environments like crypto, but our principles excel in any trading scenario, delivering real-world results without hype.
+[Discuss a project on Upwork](https://www.upwork.com/freelancers/~01d554f7011bd884f2) · [LinkedIn](https://www.linkedin.com/in/tim-izmailov-a53524283/) · [GitHub](https://github.com/Tim1l)
 
-This repository showcases basic examples of our work—simplified strategies and indicators to demonstrate the power of our approach. For advanced implementations, follow for updates!
+## Selected Examples
 
-## Strategies
+| Example | What it demonstrates | Customization |
+| --- | --- | --- |
+| [Confirmed HTF Candles](indicators/confirmed_htf_candles.pine) | The previous completed higher-timeframe candle overlaid on a lower-timeframe chart | Higher timeframe, candle colours, wick visibility |
+| [Confirmed HTF Bollinger Bands](indicators/confirmed_htf_bollinger.pine) | Bands calculated in the higher-timeframe context and displayed from the last completed bar | Higher timeframe, length, deviation, colours, line width and fill |
 
-These are simplified "entry-level" strategies to illustrate core ideas. They use multi-timeframe analysis (e.g., H4 or H1 signals on M15 charts) with RSI crossovers and ADX filters for long entries. Load them in TradingView for testing.
+Both examples use closed higher-timeframe values. The display updates as a new higher-timeframe period begins; it does not attempt to show the final values of an unfinished higher-timeframe candle.
 
-- **strategies/strategy1.pine**: Basic long entry system based on H4 timeframe conditions and RSI signals.
-- **strategies/strategy2.pine**: Similar system but tuned for H1 timeframe, focusing on pullback entries.
+See the [usage and chart-check guide](docs/USAGE.md) for settings and a TradingView verification checklist.
 
-## Indicators
+## Services
 
-Handy tools for visualizing higher timeframes on lower charts, enhancing decision-making without clutter.
+![Pine Script development services](images/services-overview.svg)
 
-- **indicators/D1_bb90_on_m15.pine**: Displays Bollinger Bands from D1 on M15 charts.
-- **indicators/h1_bb_on_m15_shifted.pine**: Shifted Bollinger Bands from H1 on M15 for trend analysis.
-- **indicators/h1_candles_on_m15.pine**: Overlays H1 candles on M15 for multi-timeframe context.
+### Custom Indicators
+Turn a defined idea into a chart tool with clear inputs, useful visuals, and maintainable source code.
 
-## Results Showcase
+**Typical deliverable:** a Pine Script indicator, settings explanations, and a walkthrough of its behaviour.
 
-Here are examples of our advanced strategies in action (not the simplified ones above). These equity curves demonstrate the potential of our non-optimized methodology:
+### Multi-Timeframe Tools
+Build overlays and market-context tools that combine chart timeframes with explicitly defined data availability.
 
-### Long Strategy Equity Curve
-![Long Strategy Equity](screenshots/strategy3.png)
+**Typical deliverable:** higher-timeframe candles, bands, or context displays adapted to the client's chart workflow.
 
-### Short Strategy Equity Curve
-![Short Strategy Equity](screenshots/strategy4.png)
+### Trading Rules to Pine Script
+Translate a client's specified entry, exit, and position-management rules into a strategy prototype.
 
-All screenshots are available in the `screenshots/` folder for further review.
+**Typical deliverable:** an implementation of agreed rules with configurable inputs and an explanation of execution assumptions.
 
-## How to Use
+### Code Review & Refinement
+Investigate existing Pine code, clarify its behaviour, and improve structure, settings, and chart usability.
 
-1. **Install in TradingView**: Copy the Pine Script code from files and paste into TradingView's Pine Editor. Save and add to your chart.
-2. **Timeframes**: Best on M15 charts with higher TF overlays (H1, H4, D1).
-3. **Customization**: Adjust inputs like lengths and thresholds to fit your instrument.
-4. **Backtesting**: Test on historical data, but remember—our strength is in forward performance without overfitting.
+**Typical deliverable:** revised source code with a concise explanation of the changes and remaining limitations.
 
-Contributions welcome! If you build on this, star the repo and share your results.
+## What I Bring
+
+- Trading-domain experience and an understanding of how tools are used on an actual chart.
+- Pine Script v6 development with custom functions, inputs, state, plots, and higher-timeframe data.
+- Broader experience building Python software, financial-data tooling, and ML research systems.
+- An engineering approach: explicit requirements, readable implementations, and checks against expected behaviour.
+
+## Working Together
+
+1. **Define the behaviour.** Agree on the market, chart timeframe, inputs, visual output, and any trading rules.
+2. **Implement the tool.** Develop a focused example that can be reviewed against the requirements.
+3. **Review on the chart.** Check settings, timeframe changes, and historical/realtime behaviour in TradingView.
+4. **Hand over the source.** Provide the code, usage notes, and an explanation of important assumptions.
+
+A useful starting brief includes:
+
+- Your idea or trading rules in plain language.
+- The symbols and timeframes you use.
+- A sketch or reference screenshot of the desired output.
+- What should happen at a new bar, an entry/exit, or a timeframe boundary.
+
+[Send a project brief on Upwork](https://www.upwork.com/freelancers/~01d554f7011bd884f2)
+
+## Using the Examples
+Open a `.pine` file in TradingView's Pine Editor and add it to a standard time-based chart. The default higher timeframe is one hour; a 15-minute chart is a suitable starting point.
+
+Choose a higher timeframe strictly greater than the chart timeframe. Each example intentionally uses the last completed higher-timeframe bar. Detailed behaviour and checks are described in [docs/USAGE.md](docs/USAGE.md).
+
+These examples demonstrate chart-tool development; they do not establish the profitability of a trading strategy.
 
 ## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT — see [LICENSE](LICENSE).
